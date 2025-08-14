@@ -1,6 +1,4 @@
-from langchain_core.messages import BaseMessage
 from sqlalchemy.orm import Session
-from core.config import settings
 
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
@@ -11,11 +9,15 @@ from core.prompts import STORY_PROMPT
 from models.story import Story, StoryNode
 from core.utils import normalize_response_text
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 class StoryGenerator:
     @classmethod
     # Underscored class methods are private methods by convention
     def _get_llm(cls):
-        return ChatOpenAI(model="gpt-4-turbo")
+        return ChatOpenAI(model="gpt-5-mini")
 
     @classmethod
     def generate_story(cls, db: Session, session_id:str, theme: str = "fantasy") -> Story:
