@@ -71,6 +71,6 @@ class StoryNode(Base):
     content: Mapped[str] = mapped_column()
     is_root: Mapped[bool] = mapped_column(default=False)
     is_ending: Mapped[bool] = mapped_column(default=False)
-    is_winning: Mapped[bool] = mapped_column(default=False)
+    is_winning_ending: Mapped[bool] = mapped_column(default=False)
     options: Mapped[list[dict[str, Any]]] = mapped_column(JSON)
     story = relationship("Story", back_populates="nodes")

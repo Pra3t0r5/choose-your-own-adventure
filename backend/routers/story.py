@@ -104,7 +104,7 @@ def get_complete_story(story_id: int, db:Session = Depends(get_db)):
     return complete_story
 
 def build_complete_story_tree(db: Session, story: Story) -> CompleteStoryResponse:
-    nodes = db.query(StoryNode).filter(StoryNode.story_id == story.id). all()
+    nodes = db.query(StoryNode).filter(StoryNode.story_id == story.id).all()
 
     node_dict={}
     for node in nodes:
