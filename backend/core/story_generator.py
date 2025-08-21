@@ -1,3 +1,4 @@
+import os
 from sqlalchemy.orm import Session
 
 from langchain_openai import ChatOpenAI
@@ -8,7 +9,6 @@ from core.models import StoryLLMResponse, StoryNodeLLM
 from core.prompts import STORY_PROMPT
 from models.story import Story, StoryNode
 from core.utils import normalize_response_text
-
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -17,6 +17,12 @@ class StoryGenerator:
     @classmethod
     # Underscored class methods are private methods by convention
     def _get_llm(cls):
+        openai_api_key = os.getenv("CHOREO_OPENAI_CONNECTION_OPENAI_API_KEY")
+        serviceurl = os.getenv("CHOREO_OPENAI_CONNECTION_SERVICEURL")
+
+        if openai_api_key and serviceurl:
+            return ChatOpenAI(model="gpt-5-mini", api_key=openai_api_key, base_url=serviceurl)
+
         return ChatOpenAI(model="gpt-5-mini")
 
     @classmethod
