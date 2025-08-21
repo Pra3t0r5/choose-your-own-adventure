@@ -13,6 +13,7 @@ const ThemeInput = ({ onSubmit }) => {
     }
     onSubmit(theme);
   };
+
   return (
     <div className="theme-input-container">
       <h2>Generate Your Adventure</h2>
@@ -23,7 +24,7 @@ const ThemeInput = ({ onSubmit }) => {
           <input
             type="text"
             value={theme}
-            onChange={(e) => setTheme(e)}
+            onChange={(e) => setTheme(e.target.value)}
             placeholder="Enter a theme (e.g. pirates, space, Wh40k, basketball..."
             className={error ? "error" : undefined}
           />
