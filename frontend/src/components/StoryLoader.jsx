@@ -1,9 +1,9 @@
-import axios from "axios";
 import { useState, useEffect } from "react";
-import LoadingStatus from "./LoadingStatus";
-import StoryGame from "./StoryGame";
-import { useNavigate, useParams } from "react-router-dom";
-import { API_BASE_URL } from "../constants";
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
+import LoadingStatus from "./LoadingStatus.jsx";
+import StoryGame from "./StoryGame.jsx";
+import { API_BASE_URL } from "../constants.js";
 
 function StoryLoader() {
   const { id } = useParams();
@@ -11,6 +11,10 @@ function StoryLoader() {
   const [story, setStory] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    loadStory(id);
+  }, [id]);
 
   const loadStory = async (storyId) => {
     setLoading(true);
@@ -21,9 +25,10 @@ function StoryLoader() {
         `${API_BASE_URL}/stories/${storyId}/complete`,
       );
       setStory(response.data);
+      setLoading(false);
     } catch (err) {
       if (err.response?.status === 404) {
-        setError("Story is not found");
+        setError("Story is not found.");
       } else {
         setError("Failed to load story");
       }
@@ -32,23 +37,19 @@ function StoryLoader() {
     }
   };
 
-  useEffect(() => {
-    loadStory(id);
-  }, [id]);
-
   const createNewStory = () => {
     navigate("/");
   };
 
   if (loading) {
-    return <LoadingStatus theme="story" />;
+    return <LoadingStatus theme={"story"} />;
   }
 
   if (error) {
     return (
       <div className="story-loader">
         <div className="error-message">
-          <h2>Story not found</h2>
+          <h2>Story Not Found</h2>
           <p>{error}</p>
           <button onClick={createNewStory}>Go to Story Generator</button>
         </div>

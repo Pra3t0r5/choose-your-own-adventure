@@ -13,6 +13,37 @@ const StoryGenerator = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  const fetchStory = async (id) => {
+    try {
+      setLoading(false);
+      setJobStatus("completed");
+      navigate(`/story/${id}`);
+    } catch (e) {
+      setError(`Failed to load story: ${e.message}`);
+      setLoading(false);
+    }
+  };
+
+  const pollJobStatus = async (id) => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/jobs/${id}`);
+      const { status, story_id, error: jobError } = response.data;
+      setJobStatus(status);
+
+      if (status === "completed" && story_id) {
+        fetchStory(story_id);
+      } else if (status === "failed" || jobError) {
+        setError(jobError || "Failed to generate story");
+        setLoading(false);
+      }
+    } catch (e) {
+      if (e.response?.status !== 404) {
+        setError(`Failed to check story status: ${e.message}`);
+        setLoading(false);
+      }
+    }
+  };
+
   const generateStory = async (theme) => {
     setLoading(true);
     setError(null);
@@ -28,50 +59,17 @@ const StoryGenerator = () => {
 
       pollJobStatus(job_id);
     } catch (e) {
+      setLoading(false);
       setError(`Failed to generate story: ${e.message}`);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchStory = (id) => {
-    try {
-      setLoading(true);
-      setJobStatus("completed");
-      navigate(`/story/${id}`);
-    } catch (err) {
-      setError(`Failed to load story: ${err.message}`);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const pollJobStatus = async (id) => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/jobs/${id}`);
-      const { status, story_id, error: jobError } = response.data;
-      setJobStatus(status);
-
-      if (status === "completed") {
-        fetchStory(story_id);
-      } else if (status === "failed" || jobError) {
-        setError(jobError || "Failed to generate story");
-      }
-    } catch (e) {
-      if (e.response?.status !== 404) {
-        setError(`Failed to check story status: ${e.message}`);
-      }
-    } finally {
-      setLoading(false);
     }
   };
 
   const reset = () => {
     setJobId(null);
     setJobStatus(null);
-    setTheme("");
     setError(null);
-    setLoading(null);
+    setTheme("");
+    setLoading(false);
   };
 
   useEffect(() => {
