@@ -5,10 +5,10 @@ endpoints:
     service:
       basePath: /
       port: 8000
-      type: REST
-      networkVisibilities:
-        - Project
-        - Public
+    type: REST
+    networkVisibilities:
+      - Project
+      - Public
 dependencies:
   connectionReferences:
     - name: openai connection
